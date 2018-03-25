@@ -6,20 +6,25 @@
 # etcdctl set /services/redis/01 10.10.100.11:6001
 # etcdctl set /services/redis/02 10.10.100.12:6002
 
-FROM jgoodall/ubuntu-confd
+FROM lekararik/ubuntu-confd:0.5.0
 
-MAINTAINER "John Goodall <jgoodall@ornl.gov>"
+MAINTAINER "areller"
+LABEL AUTHOR "John Goodall <jgoodall@ornl.gov>"
 
 ENV DEBIAN_FRONTEND noninteractive
 
 # Install basics
 RUN apt-get update
-RUN apt-get -qy install libtool make automake
+RUN apt-get -qy install libtool make automake git
 
 # Install twemproxy
-RUN curl -qL https://twemproxy.googlecode.com/files/nutcracker-0.3.0.tar.gz | tar xzf -
-RUN cd nutcracker-0.3.0 && ./configure --enable-debug=log && make && mv src/nutcracker /twemproxy
-RUN cd / && rm -rf nutcracker-0.3.0
+#RUN curl -qL https://twemproxy.googlecode.com/files/nutcracker-0.3.0.tar.gz | tar xzf -
+#RUN cd nutcracker-0.3.0 && ./configure --enable-debug=log && make && mv src/nutcracker /twemproxy
+#RUN cd / && rm -rf nutcracker-0.3.0
+
+ADD nutcracker-0.4.1 nutcracker-0.4.1
+RUN ls
+RUN cd nutcracker-0.4.1 && ./configure --enable-debug=log && make && mv src/nutcracker /twemproxy
 
 # Set up run script
 ADD run.sh /run.sh
